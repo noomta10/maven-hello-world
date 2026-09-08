@@ -11,9 +11,10 @@ WORKDIR /app
 
 # Create a non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-USER appuser
 
-# Copy the artifact from the builder stage
-COPY --from=builder /app/target/my-app-*.jar /app/app.jar
+# Copy the artifact from the builder stage with ownership
+COPY --chown=appuser:appgroup --from=builder /app/target/myapp-*.jar /app/app.jar
+
+USER appuser
 
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
